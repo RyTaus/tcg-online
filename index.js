@@ -21,8 +21,21 @@ http.listen(portNumber, () => {
 
 
 
+const clients = [];
+
 io.on('connection', (socket) => {
-  socket.emit('initialize', board);
+  clients.push(socket);
+  io.to(socket.id).emit('initialize', {board: board, id: clients.length - 1});
+  console.log(`${socket.id} has joined`);
+  // socket.emit('initialize', board);
+
+  socket.on('disconnect', () => {
+    let index = clients.indexOf(socket);
+    if (index !== -1) {
+      clients.splice(index, 1);
+    }
+    console.log(`${socket.id} has left`);
+  })
 
   socket.on('draw', () => {
     board.players[0].draw();
