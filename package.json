@@ -8,7 +8,9 @@
     "phaser": "^2.6.2",
     "socket.io": "^2.0.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^4.1.0"
+  },
   "scripts": {
     "test": "test",
     "start": "node index.js"
