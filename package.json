@@ -1,0 +1,26 @@
+{
+  "name": "tcg-online",
+  "version": "1.0.0",
+  "description": "online trading card game",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.15.3",
+    "phaser": "^2.6.2",
+    "socket.io": "^2.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RyTaus/tcg-online.git"
+  },
+  "author": "ryan taus",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RyTaus/tcg-online/issues"
+  },
+  "homepage": "https://github.com/RyTaus/tcg-online#readme"
+}
