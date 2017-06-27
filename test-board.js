@@ -15,8 +15,6 @@ console.log(deck);
 let player1 = new Player(deck);
 let player2 = new Player(new CardCollection([a.copy(), a.copy(), a.copy(), a.copy(), c.copy()]));
 
-player1.draw(3);
-player2.draw(2);
 let board = new Board(player1, player2);
 
 module.exports = board;

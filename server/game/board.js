@@ -8,6 +8,20 @@ class Board {
   nextTurn() {
     this.turn = (this.turn + 1) % 2;
   }
+
+  activate(thing, player) {
+    thing.activate(this, player);
+  }
+
+  setUp() {
+    this.players.forEach((player, i) => {
+      player.setUp(i);
+    });
+  }
+
+  dataToCard(card, location, player) {
+    return player.dataToCard(card, location);
+  }
 }
 
 module.exports = Board;

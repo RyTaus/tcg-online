@@ -18,6 +18,22 @@ class CardCollection {
     }
   }
 
+  indexOf(card) {
+    return this.cards.map(c => c.duel_id).indexOf(card.duel_id);
+  }
+
+  dataToCard(card) {
+    if (card === null) {
+      console.log('data-to-card of null');
+      return null;
+    }
+    return this.cards[this.indexOf(card)];
+  }
+
+  getCard(card) {
+    return this.cards.splice(this.indexOf(card), 1)[0];
+  }
+
   getCardAt(index) {
     return this.cards.splice(index, 1)[0];
   }

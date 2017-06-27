@@ -19,10 +19,9 @@ http.listen(portNumber, () => {
   console.log(`listening on port: ${portNumber}`);
 });
 
-
-
-
 const clients = [];
+
+board.setUp();
 
 io.on('connection', (socket) => {
   clients.push(socket);
@@ -36,6 +35,13 @@ io.on('connection', (socket) => {
       clients.splice(index, 1);
     }
     console.log(`${socket.id} has left`);
+  });
+
+  socket.on('activate', (card) => {
+    console.log(card);
+    let c = board.dataToCard(card, card.location, board.players[0]);
+    board.activate(c, board.players[0]);
+    socket.emit('update', board);
   });
 
   socket.on('draw', () => {

@@ -1,13 +1,23 @@
-const HEIGHT = 40;
-const WIDTH = 300;
 
-class Option extends Phaser.Text {
+
+class Option extends Phaser.Group {
   constructor(game, option, x, y, menu) {
-    super(game, x, y, option.text);
-    this.inputEnabled = true;
-    this.events.onInputDown.add(option.action, this);
-    this.events.onInputUp.add(() => menu.destroy(true), this);
+    // super(game, x, y, option.text);
+    super(game);
+    this.button = game.add.sprite(x - 10, y, 'bg');
+    this.button.scale.setTo(1.6, 0.3);
 
+    this.add(this.button);
+    this.button.inputEnabled = true;
+    this.button.tint = 0x888888;
+    this.button.events.onInputDown.add(option.action, this.button);
+    this.button.events.onInputOver.add(() => { this.button.tint = 0xdddddd });
+    this.button.events.onInputOut.add(() => { this.button.tint = 0x888888 });
+
+    this.button.events.onInputUp.add(() => menu.destroy(true), this.button);
+
+    this.text = game.add.text(x - 10, y, option.text);
+    this.add(this.text);
   }
 }
 
@@ -24,7 +34,7 @@ class Menu extends Phaser.Group {
     this.add(this.rect);
 
     this.options = options.map((option, i) => {
-      const opt = new Option(game, option, game.input.x, game.input.y - (30 * (options.length - i)), this);
+      const opt = new Option(game, option, game.input.x, game.input.y - (35 * (options.length - i)), this);
       game.add.existing(opt);
       this.add(opt);
       return opt;

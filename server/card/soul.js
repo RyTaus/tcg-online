@@ -9,6 +9,12 @@ class Soul extends Card {
     this.type = this.effect ? 'effect-soul' : 'soul';
   }
 
+  activate(board, player) {
+    if (player.canAfford(this.cost)) {
+      player.moveCardTo(this, 'field');
+    }
+  }
+
   copy() {
     return new Soul(this.name, this.cost, this.element, this.attack, this.defense, this.effect);
   }
