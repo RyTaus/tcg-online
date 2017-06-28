@@ -29,8 +29,6 @@ class Menu extends Phaser.Group {
     this.rect = game.add.sprite(game.input.x - 30, game.input.y - 15 - (30 * options.length), 'menu-bg');
     this.rect.scale.setTo(2, 1.5);
     this.rect.inputEnabled = true;
-    // this.rect.events.onInputOut.add(() => this.destroy(true), this.rect);
-    // game.add.existing(rect);
     this.add(this.rect);
 
     this.options = options.map((option, i) => {

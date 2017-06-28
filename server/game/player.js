@@ -19,7 +19,7 @@ class Player {
     this.deck.cards.forEach((card, i) => {
       card.duel_id = `${n}_${i}`;
     });
-    this.draw(2 + n);
+    this.draw(2);
   }
 
   canAfford(cost) {

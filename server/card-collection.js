@@ -43,7 +43,7 @@ class CardCollection {
   }
 
   getTopCard() {
-    return this.getCardAt(0);
+    return this.cards[0];
   }
 }
 
