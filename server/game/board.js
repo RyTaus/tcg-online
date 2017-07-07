@@ -1,8 +1,17 @@
+const elements = require('./../card/elements.js');
+
 class Board {
   constructor(player1, player2) {
     this.players = [player1, player2];
 
     this.turn = 0;
+
+    this.canExpunge = true;
+    this.pool = { };
+    Object.keys(elements).forEach((e) => {
+      this.pool[e] = 0;
+    });
+    this.manafiedCards = [];
   }
 
   nextTurn() {
@@ -11,6 +20,17 @@ class Board {
 
   activate(thing, player) {
     thing.activate(this, player);
+  }
+
+  expunge(card, player) {
+    this.pool[card.element] += 1;
+    this.players[0].pool[card.element] += 1;
+    this.players[1].pool[card.element] += 1;
+    this.manafiedCards.push(card);
+  }
+
+  attack(attacker, attackerPlayer, target, targetPlayer) {
+    targetPlayer.life -= attacker.attack - target.defense;
   }
 
   setUp() {

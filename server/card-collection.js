@@ -9,7 +9,7 @@ class CardCollection {
 
   shuffle() {
     let s = this.cards.length;
-    while(s) {
+    while (s) {
       s-= 1;
       const i = Math.floor(Math.random() * s);
       const j = this.cards[s];

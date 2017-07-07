@@ -9,6 +9,10 @@ class Card {
     this.cost = cost;
     this.element = element;
   }
+
+  idToPlayer() {
+    return +this.duel_id.charAt(0);
+  }
 }
 
 module.exports = Card;

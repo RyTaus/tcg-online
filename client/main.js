@@ -21,6 +21,8 @@ const gameBoard = {
   turn: null
 };
 
+let life = null;
+
 const game = new Phaser.Game(1600, 1200, Phaser.CANVAS, '', {preload, create, update});
 
 function preload() {
@@ -48,6 +50,11 @@ function create() {
   gameBoard.you.hand = game.add.group();
   gameBoard.you.field = game.add.group();
 
+  gameBoard.them.hand = game.add.group();
+  gameBoard.them.field = game.add.group();
+
+  life = game.add.text(800, 50, 'you:  || them:  ');
+
   updateState();
 }
 
@@ -55,16 +62,24 @@ function update() {
 
 }
 
-const drawCard = (x, y, card, group, onclick) => {
+const drawCard = (x, y, card, group, onclick, flip = false) => {
   const temp = new Card(game, card, x, y, onclick);
-  temp.scale.setTo(0.8, 0.8);
+  temp.scale.setTo(0.6, 0.6);
+  temp.anchor.setTo(0.5, 0.5);
+
+  if (flip) {
+    temp.angle += 180;
+  }
   group.add(temp);
+  return temp;
 };
 
 const updateState = () => {
+  life.setText(`you: ${board.players[id].life} || them: ${board.players[(id + 1) % 2].life}`);
+
   gameBoard.you.hand.removeAll();
   board.players[id].hand.cards.forEach((card, i) => {
-    drawCard(200 + (200 * i), 800, card, gameBoard.you.hand, () => {
+    drawCard(200 + (200 * i), 1000, card, gameBoard.you.hand, () => {
       if (menu) {
         menu.kill();
       }
@@ -72,15 +87,37 @@ const updateState = () => {
     });
   });
 
+
+  gameBoard.you.field.removeAll();
   board.players[id].field.cards.forEach((card, i) => {
-    drawCard(200 + (200 * i), 500, card, gameBoard.you.field, () => {
+    drawCard(200 + (200 * i), 700, card, gameBoard.you.field, () => {
       if (menu) {
         menu.kill();
       }
-      menu = new Menu(game, [{ text: 'attack', action: () => { console.log(card);  message.attack(card); } }]);
+      menu = new Menu(game, [{ text: 'attack', action: () => {
+        menu.kill();
+        console.log(board.players[(id + 1) % 2].field);
+        menu = new CardSelection(game, board.players[(id + 1) % 2].field.cards, (target) => { message.attack(card, target) });
+      } }]);
     });
   });
+
+  updateOpponent();
 };
+
+const updateOpponent = () => {
+  gameBoard.them.hand.removeAll();
+
+  board.players[(id + 1) % 2].hand.cards.forEach((card, i) => {
+    drawCard(200 + (200 * i), 100, { name: 'back' }, gameBoard.them.hand, () => { }, true);
+  });
+
+
+  gameBoard.them.field.removeAll();
+  board.players[(id + 1) % 2].field.cards.forEach((card, i) => {
+    drawCard(200 + (200 * i), 350, card, gameBoard.them.field, () => { }, true);
+  });
+}
 
 
 socket.on('initialize', (data) => {

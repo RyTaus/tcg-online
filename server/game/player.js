@@ -1,4 +1,6 @@
 const CardCollection = require('./../card-collection.js');
+const elements = require('./../card/elements.js');
+
 
 class Player {
   constructor(deck) {
@@ -11,6 +13,11 @@ class Player {
     this.hand = new CardCollection();
     this.field = new CardCollection();
     this.afterworld = new CardCollection();
+
+    this.pool = { };
+    Object.keys(elements).forEach((e) => {
+      this.pool[e] = 0;
+    });
 
     this.life = 20;
   }
@@ -27,8 +34,8 @@ class Player {
     return true;
   }
 
-  grabCard(card, location) {
-    return this[location].getCard(card);
+  grabCard(card) {
+    return this[card.location].getCard(card);
   }
 
   dataToCard(card, location) {
