@@ -20,6 +20,7 @@ class Board {
   nextTurn() {
     this.turn = (this.turn + 1) % 2;
     this.phase = new Phase();
+    this.canExpunge = true;
     // TODO reset mana and phase
   }
 
@@ -39,7 +40,15 @@ class Board {
 
   processStandby() {
     // TODO loop through effects that happen on standby
-    this.phase.next();
+    if (this.phase.in('standby')) {
+      this.phase.next();
+    }
+    return this;
+  }
+
+  processEnd() {
+    // TODO do end phase stuff
+    this.nextTurn();
     return this;
   }
 
@@ -49,6 +58,7 @@ class Board {
     this.players[1].pool[card.element] += 1;
     this.manafiedCards.push(card);
     player.moveCardTo(card, 'manazone');
+    this.canExpunge = false;
   }
 
   attack(attacker, attackerPlayer, target, targetPlayer) {

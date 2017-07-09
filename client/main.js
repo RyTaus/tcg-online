@@ -81,7 +81,7 @@ const canAfford = (cost) => {
   Object.keys(board.pool).forEach((c) => {
     if (c !== 'Nuetral') {
       const costOfElem = cost[c] || 0;
-      console.log(`${c}: ${costOfElem}  ${board.pool[c]}`);
+      // console.log(`${c}: ${costOfElem}  ${board.pool[c]}`);
       if (costOfElem > board.pool[c]) {
         can = false;
       }
@@ -89,7 +89,7 @@ const canAfford = (cost) => {
       sumBoard += board.pool[c];
     }
   });
-  console.log(sumCard, '  ', sumBoard);
+  // console.log(sumCard, '  ', sumBoard);
   return can && sumCard <= sumBoard;
 }
 
@@ -126,6 +126,11 @@ const getActions = (card) => {
   }
   if (board.turn != id) {
     actions = [];
+    console.log('not your turn biaaaaatch');
+  }
+  if (board.phase.state !== 'main') {
+    actions = [];
+    console.log('no actions not in main');
   }
   return actions;
 };
@@ -175,11 +180,7 @@ const updateState = () => {
       if (menu) {
         menu.kill();
       }
-      menu = new Menu(game, [{ text: 'attack', action: () => {
-        menu.kill();
-        console.log(board.players[(id + 1) % 2].field);
-        menu = new CardSelection(game, board.players[(id + 1) % 2].field.cards, (target) => { message.attack(card, target) });
-      } }]);
+      menu = new Menu(game, getActions(card));
     });
   });
 

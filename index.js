@@ -92,6 +92,15 @@ io.on('connection', (socket) => {
     update();
   });
 
+  socket.on('end', () => {
+    if (board.phase.in('main')) {
+          board.processEnd();
+    } else {
+      console.log('Cannot end turn while not in main phase.');
+    }
+    update();
+  })
+
   socket.on('renew', () => {
     console.log(playerIndex);
     io.sockets.emit('update', board);
