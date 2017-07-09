@@ -6,7 +6,7 @@ const ELEMENT = require('./server/card/elements.js');
 
 let c = new Soul('red1', {'red': 4}, ELEMENT.red, 4, 2, null);
 let b = new Soul('blue1', {'blue': 1}, ELEMENT.blue, 4, 2, null);
-let a = new Soul('red2', {'red': 1, 'blue': 1}, ELEMENT.red, 4, 2, null);
+let a = new Soul('red2', {'red': 1}, ELEMENT.red, 4, 2, null);
 // console.log(Soul);
 
 let deck = new CardCollection([a.copy(), b.copy(), c.copy(), a.copy(), b.copy(), c.copy(), a.copy(), b.copy(), c.copy()]);

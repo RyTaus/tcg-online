@@ -15,6 +15,7 @@ class Menu extends Phaser.Group {
       this.add(opt);
       return opt;
     });
+    // TODO changes on empty options
   }
 
   kill() {

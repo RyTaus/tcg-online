@@ -22,6 +22,9 @@ const gameBoard = {
 };
 
 let life = null;
+let pool = null;
+let phase = null;
+let turn = null;
 
 const game = new Phaser.Game(1600, 1200, Phaser.CANVAS, '', {preload, create, update});
 
@@ -46,6 +49,10 @@ function create() {
   });
 
   gameBoard.you.deck = game.add.sprite(1400, 800, 'back');
+  gameBoard.you.deck.inputEnabled = true;
+  gameBoard.you.deck.events.onInputDown.add(() => {
+    message.draw();
+  });
 
   gameBoard.you.hand = game.add.group();
   gameBoard.you.field = game.add.group();
@@ -53,7 +60,12 @@ function create() {
   gameBoard.them.hand = game.add.group();
   gameBoard.them.field = game.add.group();
 
+  pool = game.add.group();
   life = game.add.text(800, 50, 'you:  || them:  ');
+  phase = game.add.text(800, 100, 'Phase: ');
+  turn = game.add.text(800, 150, 'Turn: ');
+
+
 
   updateState();
 }
@@ -61,6 +73,62 @@ function create() {
 function update() {
 
 }
+
+const canAfford = (cost) => {
+  let can = true;
+  let sumCard = 0;
+  let sumBoard = 0;
+  Object.keys(board.pool).forEach((c) => {
+    if (c !== 'Nuetral') {
+      const costOfElem = cost[c] || 0;
+      console.log(`${c}: ${costOfElem}  ${board.pool[c]}`);
+      if (costOfElem > board.pool[c]) {
+        can = false;
+      }
+      sumCard += costOfElem;
+      sumBoard += board.pool[c];
+    }
+  });
+  console.log(sumCard, '  ', sumBoard);
+  return can && sumCard <= sumBoard;
+}
+
+class Option {
+  constructor(text, action) {
+    this.text = text;
+    this.action = action;
+  }
+}
+
+const getActions = (card) => {
+  let actions = [];
+  switch (card.location) {
+    case 'hand':
+      if (canAfford(card.cost)) {
+        actions.push(new Option('summon', () => { message.playCard(card); }));
+      }
+      if (board.canExpunge) {
+        actions.push(new Option('expunge', () => { message.expunge(card); }));
+      }
+      break;
+
+    case 'field':
+      if (!card.hasAttacked) {
+        actions.push(new Option('attack', () => {
+          menu.kill();
+          menu = new CardSelection(game, board.players[(id + 1) % 2].field.cards, (target) => { message.attack(card, target); });
+        }));
+      }
+      break;
+
+    default:
+      break;
+  }
+  if (board.turn != id) {
+    actions = [];
+  }
+  return actions;
+};
 
 const drawCard = (x, y, card, group, onclick, flip = false) => {
   const temp = new Card(game, card, x, y, onclick);
@@ -75,7 +143,20 @@ const drawCard = (x, y, card, group, onclick, flip = false) => {
 };
 
 const updateState = () => {
+  if (board.phase.state === 'standby') {
+    socket.emit('standby');
+  }
+
   life.setText(`you: ${board.players[id].life} || them: ${board.players[(id + 1) % 2].life}`);
+  phase.setText(`Phase: ${board.phase.state}`);
+  turn.setText(`Trun: ${board.turn === id ? 'yours' : 'theirs'}`);
+
+
+  pool.removeAll();
+
+  Object.keys(board.players[id].pool).forEach((elem, i) => {
+    pool.add(game.add.text(900, 200 + (50 * i), `${elem}: ${board.players[id].pool[elem]}`));
+  });
 
   gameBoard.you.hand.removeAll();
   board.players[id].hand.cards.forEach((card, i) => {
@@ -83,7 +164,7 @@ const updateState = () => {
       if (menu) {
         menu.kill();
       }
-      menu = new Menu(game, [{ text: 'summon', action: () => { console.log(card);  message.playCard(card); } }, { text: 'expunge', action: () => { console.log(card);  message.expunge(card); }  }]);
+      menu = new Menu(game, getActions(card));
     });
   });
 
@@ -117,7 +198,7 @@ const updateOpponent = () => {
   board.players[(id + 1) % 2].field.cards.forEach((card, i) => {
     drawCard(200 + (200 * i), 350, card, gameBoard.them.field, () => { }, true);
   });
-}
+};
 
 
 socket.on('initialize', (data) => {

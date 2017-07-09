@@ -13,6 +13,8 @@ class Player {
     this.hand = new CardCollection();
     this.field = new CardCollection();
     this.afterworld = new CardCollection();
+    this.manazone = new CardCollection();
+
 
     this.pool = { };
     Object.keys(elements).forEach((e) => {

@@ -43,11 +43,11 @@ io.on('connection', (socket) => {
     console.log(typeof id);
     console.log(id);
     return id;
-  }
+  };
 
   const cardOwner = (card) => {
     return board.players[playerIdFromCard(card)];
-  }
+  };
 
   const dataToCard = (data) => {
     return board.dataToCard(data, data.location, board.players[playerIdFromCard(data)]);
@@ -63,8 +63,6 @@ io.on('connection', (socket) => {
   });
 
   socket.on('activate', (card) => {
-    console.log(card);
-    console.log(playerIndex);
     const c = dataToCard(card);
     board.activate(c, board.players[playerIndex]);
     update();
@@ -73,21 +71,24 @@ io.on('connection', (socket) => {
   socket.on('expunge', (card) => {
     const c = dataToCard(card);
     board.expunge(c, board.players[playerIndex]);
-    board.players[playerIndex].grabCard(c, c.location);
+    // board.players[playerIndex].grabCard(c, c.location);
+    update();
+  });
+
+  socket.on('standby', () => {
+    board.processStandby();
     update();
   });
 
   socket.on('attack', ({ card, target }) => {
-    console.log(card);
-    console.log('attacks');
-    console.log(target);
     board.attack(dataToCard(card), cardOwner(card), dataToCard(target), cardOwner(target));
     update();
   });
 
   socket.on('draw', () => {
+    // TODO callbacks for clients if request is not good
     console.log(board.players[playerIndex]);
-    board.players[playerIndex].draw();
+    board.draw(playerIndex);
     update();
   });
 
