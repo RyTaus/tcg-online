@@ -119,6 +119,20 @@ const getActions = (card) => {
           menu = new CardSelection(game, board.players[(id + 1) % 2].field.cards, (target) => { message.attack(card, target); });
         }));
       }
+      if (card.type === 'effect-soul') {
+        if (card.effect.trigger === 'activate') {
+          if (card.effect.choose) {
+            actions.push(new Option('activate', () => {
+              menu.kill();
+              // TODO the function should have some sort of counter containing amount chosen.
+              console.log(filter(board, id, card.effect.data.filters));
+              menu = new CardSelection(game, filter(board, id, card.effect.data.filters), (chosen) => { console.log(chosen); message.activate(card, [chosen]); });
+            }))
+          } else {
+            actions.push(new Option('activate', () => { message.activate(card); }));
+          }
+        }
+      }
       break;
 
     default:

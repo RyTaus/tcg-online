@@ -34,8 +34,12 @@ class Board {
     return false;
   }
 
-  activate(thing, player) {
+  summon(thing, player) {
     thing.activate(this, player);
+  }
+
+  activate(card, data, playerIndex) {
+    card.effect.activate(data, this, playerIndex);
   }
 
   processStandby() {

@@ -62,9 +62,16 @@ io.on('connection', (socket) => {
     console.log(`${socket.id} has left`);
   });
 
-  socket.on('activate', (card) => {
+  socket.on('summon', (card) => {
     const c = dataToCard(card);
-    board.activate(c, board.players[playerIndex]);
+    board.summon(c, board.players[playerIndex]);
+    update();
+  });
+
+  socket.on('activate', ({ card, data }) => {
+    // Data is any additional info the effect needs to resolve, IE target
+    const c = dataToCard(card);
+    board.activate(c, data, playerIndex);
     update();
   });
 

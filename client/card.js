@@ -1,6 +1,6 @@
 class Card extends Phaser.Sprite {
   constructor(game, card, x, y, onclick) {
-    super(game, x, y, card.name);
+    super(game, x, y, card ? card.name : 'bg');
     this.card = card;
     this.onclick = onclick;
     this.anchorPoint = { x, y };

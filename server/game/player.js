@@ -41,7 +41,7 @@ class Player {
   }
 
   dataToCard(card, location) {
-    return this[location].dataToCard(card);
+    return this[card.location].dataToCard(card);
   }
 
   draw(amount = 1) {

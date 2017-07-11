@@ -30,6 +30,9 @@ class CardSelection extends Phaser.Group {
   }
 
   update() {
+    // if (this.cards.length === 0) {
+    //   this.kill();
+    // }
     if (this.focus) {
       this.focus.destroy(true);
     }
