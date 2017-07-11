@@ -20,15 +20,21 @@ http.listen(portNumber, () => {
   console.log(`listening on port: ${portNumber}`);
 });
 
+const clients = [];
+
 const update = () => {
   io.sockets.emit('update', board);
 };
 
 const askForResponse = (action) => {
-
-}
-
-const clients = [];
+  io.to(clients[action.playerId].id).emit('response-query', {
+    board,
+    action,
+    callback: (act) => {
+      console.log('asked for response');
+    }
+  })
+};
 
 board.setUp();
 console.log(board.pool);
@@ -37,10 +43,17 @@ console.log(board.pool);
 const clientPlayerIndex = socket => clients.indexOf(socket);
 
 io.on('connection', (socket) => {
+
   clients.push(socket);
   io.to(socket.id).emit('initialize', {board: board, id: clients.length - 1});
   console.log(`${socket.id} has joined`);
   const playerIndex = clientPlayerIndex(socket);
+  const otherPlayerIndex = (playerIndex + 1) % 2;
+
+  const Action = require('./action.js')(playerIndex, update, askForResponse);
+
+  const actionStack = [];
+
 
   const playerIdFromCard = (card) => {
     let id = +card.duel_id.charAt(0);
@@ -66,10 +79,17 @@ io.on('connection', (socket) => {
     console.log(`${socket.id} has left`);
   });
 
+  socket.on('respond', ({ action, response }) => {
+    // TODO not assume reponse is activate effect? But maybe thats all it can be i think
+    // TODO also maybe response contains the card along with additional choices??
+    const c = dataToCard(response);
+    board.activate(c, action, playerIndex);
+  });
+
   socket.on('summon', (card) => {
     const c = dataToCard(card);
-    board.summon(c, board.players[playerIndex]);
-    update();
+    const a = new Action.Summon(c);
+    a.perform(board);
   });
 
   socket.on('activate', ({ card, data }) => {

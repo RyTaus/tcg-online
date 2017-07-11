@@ -10,33 +10,15 @@ const Requirement = require('./server/card/requirement.js');
 
 let c = new Soul('red1', {'red': 4}, ELEMENT.red, 4, 2, null);
 let b = new Soul('blue1', {'blue': 1}, ELEMENT.blue, 4, 2, null);
-let a = new Soul('red2', {'red': 1}, ELEMENT.red, 4, 2, null);
 
-const effect = {
-  trigger: 'activate',
-  type: 'addto',
-  data: {
-    from: 'deck',
-    to: 'hand',
-    requirements: []
-  }
-};
-
-const effect2 = {
-  trigger: 'activate',
-  type: 'damage',
-  data: {
-    target: 'self',
-    amount: -2
-  },
-  activate: (board, pi) => {
-    board.players[pi].life += -2;
-  }
-}
 
 const r = new Requirement(['manazone'], ['blue', 'red'], ['soul', 'effect-soul']);
 
 const EFFECT = new Effect.AddTo(new Trigger.Activate('field'), { blue: 1 }, r, 'field');
+
+const EFFECT2 = new Effect.Draw(new Trigger.OnOtherSummon('hand'), {}, 1);
+
+let a = new Soul('red2', {'red': 1}, ELEMENT.red, 4, 2, EFFECT2);
 
 let d = new Soul('blue2', { 'blue': 1}, ELEMENT.blue, 1, 1, EFFECT);
 console.log(EFFECT);
@@ -50,25 +32,6 @@ let player2 = new Player(new CardCollection([a.copy(), a.copy(), a.copy(), a.cop
 
 let board = new Board(player1, player2);
 
-// const filter = (board, id, requirement) => {
-//   /* takes in a requirements object and returns a list of cards that satisfy
-//      the requirements.
-//   */
-//   const result = [];
-//   const player = board.players[id];
-//   // might do for each requirement
-//   requirement.locations.forEach((loc) => {
-//     player[loc].cards.forEach((card) => {
-//       if (requirement.elements.includes(card.element) && requirement.cardType.includes(card.type)) {
-//         result.push(card);
-//       }
-//     });
-//   });
-//   return result;
-// };
-//
-// let hmmm = filter(board, 0, r);
-// console.log(hmmm);
 
 // console.log(board.players[1]);
 

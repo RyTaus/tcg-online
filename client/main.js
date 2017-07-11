@@ -188,6 +188,7 @@ const updateState = () => {
   gameBoard.you.hand.removeAll();
   board.players[id].hand.cards.forEach((card, i) => {
     drawCard(200 + (200 * i), 1000, card, gameBoard.you.hand, () => {
+      console.log(card);
       if (menu) {
         menu.kill();
       }
@@ -233,4 +234,16 @@ socket.on('initialize', (data) => {
 socket.on('update', (data) => {
   board = data;
   updateState();
+});
+
+socket.on('response-query', ({ action, callback }) => {
+  console.log(action);
+  let possibleResponses = getResponses(board, id, action);
+  console.log(possibleResponses);
+  if (possibleResponses.length > 0) {
+    console.log('HERE I WOULD CHOOSE ACTION');
+  }
+  let response = possibleResponses[0];
+  // TODO how to describe response
+  message.respond(action, response)
 });

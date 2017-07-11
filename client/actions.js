@@ -4,6 +4,8 @@ const message = {
   attack(card, target) { socket.emit('attack', { card, target }); },
   expunge(card) { socket.emit('expunge', card); },
   end() { socket.emit('end'); },
-  draw() { socket.emit('draw'); }
+  draw() { socket.emit('draw'); },
+
+  respond(action, response) { socket.emit('respond', { action, response }); }
 
 };

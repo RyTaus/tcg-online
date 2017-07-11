@@ -19,3 +19,24 @@ const filter = (board, id, requirement) => {
   });
   return result;
 };
+
+const getResponses = (board, id, action) => {
+  const canRespond = (card) => {
+    if (action.action === 'summon') {
+      if (card.effect.trigger.type === 'on-other-summon') {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  const responses = [];
+
+  board.players[id].hand.cards.forEach((card) => {
+    if (canRespond(card)) {
+      responses.push(card);
+    }
+  });
+
+  return responses;
+};

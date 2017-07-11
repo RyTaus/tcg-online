@@ -16,7 +16,14 @@ class OnSummon extends Trigger {
   }
 }
 
+class OnOtherSummon extends Trigger {
+  constructor(location) {
+    super('on-other-summon', location)
+  }
+}
+
 module.exports = {
   Activate,
-  OnSummon
+  OnSummon,
+  OnOtherSummon
 };
