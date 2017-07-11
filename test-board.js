@@ -4,7 +4,8 @@ const Player = require('./server/game/player.js');
 const Board = require('./server/game/board.js');
 const ELEMENT = require('./server/card/elements.js');
 
-const AddTo = require('./server/card/effect.js');
+const Effect = require('./server/card/effect.js');
+const Trigger = require('./server/card/trigger.js');
 const Requirement = require('./server/card/requirement.js');
 
 let c = new Soul('red1', {'red': 4}, ELEMENT.red, 4, 2, null);
@@ -35,7 +36,7 @@ const effect2 = {
 
 const r = new Requirement(['manazone'], ['blue', 'red'], ['soul', 'effect-soul']);
 
-const EFFECT = new AddTo('activate', { blue: 1 }, r, 'field');
+const EFFECT = new Effect.AddTo(new Trigger.Activate('field'), { blue: 1 }, r, 'field');
 
 let d = new Soul('blue2', { 'blue': 1}, ELEMENT.blue, 1, 1, EFFECT);
 console.log(EFFECT);

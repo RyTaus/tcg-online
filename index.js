@@ -22,6 +22,10 @@ http.listen(portNumber, () => {
 
 const update = () => {
   io.sockets.emit('update', board);
+};
+
+const askForResponse = (action) => {
+
 }
 
 const clients = [];

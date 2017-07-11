@@ -1,5 +1,6 @@
 class Requirement {
-  constructor(locations = [], elements = [], cardType = [], maxCost = 100) {
+  constructor(locations = [], elements = [], cardType = [], players = ['me'], maxCost = 100) {
+    this.players = players;
     this.locations = locations;
     this.elements = elements;
     this.cardType = cardType;

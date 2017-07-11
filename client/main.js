@@ -39,6 +39,8 @@ function preload() {
 }
 
 function create() {
+  game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+
   const bg = game.add.sprite(0, 0, 'bg');
   bg.scale.setTo(16, 12);
   bg.inputEnabled = true;
@@ -52,6 +54,11 @@ function create() {
   gameBoard.you.deck.inputEnabled = true;
   gameBoard.you.deck.events.onInputDown.add(() => {
     message.draw();
+  });
+  const END = game.add.text(1400, 1100, 'END');
+  END.inputEnabled = true;
+  END.events.onInputDown.add(() => {
+    message.end();
   });
 
   gameBoard.you.hand = game.add.group();
@@ -119,7 +126,7 @@ const getActions = (card) => {
         }));
       }
       if (card.type === 'effect-soul') {
-        if (card.effect.trigger === 'activate') {
+        if (card.effect.trigger.type === 'activate') {
           if (canAfford(card.effect.cost)) {
             if (card.effect.choose) {
               actions.push(new Option('activate', () => {

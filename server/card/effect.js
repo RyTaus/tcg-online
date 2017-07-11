@@ -8,6 +8,7 @@
   }
 
 */
+const Trigger = require('./trigger.js');
 
 class Effect {
   constructor(type, trigger, cost) {
@@ -40,19 +41,11 @@ class AddTo extends Effect {
   }
 }
 
-let test = new AddTo('activate', { location: ['deck'], element: ['red'] }, 'hand');
-// console.log(test);
+let test = new AddTo(new Trigger.Activate('field'), { location: ['deck'], element: ['red'] }, 'hand');
 
-effect = {
-  trigger: 'activate',
-  type: 'addto',
-  data: {
-    from: 'deck',
-    to: 'hand',
-    filters: []
-  }
-}
 
-module.exports = AddTo;
+module.exports = {
+  AddTo
+};
 
 // requirements will be lists of lists induvidual lists will be ors which will all be anded together.
