@@ -65,8 +65,6 @@ function create() {
   phase = game.add.text(800, 100, 'Phase: ');
   turn = game.add.text(800, 150, 'Turn: ');
 
-
-
   updateState();
 }
 
@@ -82,16 +80,17 @@ const canAfford = (cost) => {
     if (c !== 'Nuetral') {
       const costOfElem = cost[c] || 0;
       // console.log(`${c}: ${costOfElem}  ${board.pool[c]}`);
-      if (costOfElem > board.pool[c]) {
+      // TODO should use player's pool
+      if (costOfElem > board.players[id].pool[c]) {
         can = false;
       }
       sumCard += costOfElem;
-      sumBoard += board.pool[c];
+      sumBoard += board.players[id].pool[c];
     }
   });
   // console.log(sumCard, '  ', sumBoard);
   return can && sumCard <= sumBoard;
-}
+};
 
 class Option {
   constructor(text, action) {
@@ -121,15 +120,17 @@ const getActions = (card) => {
       }
       if (card.type === 'effect-soul') {
         if (card.effect.trigger === 'activate') {
-          if (card.effect.choose) {
-            actions.push(new Option('activate', () => {
-              menu.kill();
-              // TODO the function should have some sort of counter containing amount chosen.
-              console.log(filter(board, id, card.effect.data.filters));
-              menu = new CardSelection(game, filter(board, id, card.effect.data.filters), (chosen) => { console.log(chosen); message.activate(card, [chosen]); });
-            }))
-          } else {
-            actions.push(new Option('activate', () => { message.activate(card); }));
+          if (canAfford(card.effect.cost)) {
+            if (card.effect.choose) {
+              actions.push(new Option('activate', () => {
+                menu.kill();
+                // TODO the function should have some sort of counter containing amount chosen.
+                console.log(filter(board, id, card.effect.data.filters));
+                menu = new CardSelection(game, filter(board, id, card.effect.data.filters), (chosen) => { console.log(chosen); message.activate(card, [chosen]); });
+              }))
+            } else {
+              actions.push(new Option('activate', () => { message.activate(card); }));
+            }
           }
         }
       }
@@ -174,7 +175,7 @@ const updateState = () => {
   pool.removeAll();
 
   Object.keys(board.players[id].pool).forEach((elem, i) => {
-    pool.add(game.add.text(900, 200 + (50 * i), `${elem}: ${board.players[id].pool[elem]}`));
+    pool.add(game.add.text(900, 200 + (50 * i), `${elem}: ${board.players[id].pool[elem]} / ${board.pool[elem]}`));
   });
 
   gameBoard.you.hand.removeAll();

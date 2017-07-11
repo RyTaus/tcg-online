@@ -31,6 +31,12 @@ class Player {
     this.draw(2);
   }
 
+  payCost(cost) {
+    Object.keys(cost).forEach((e) => {
+      this.pool[e] -= cost[e];
+    });
+  }
+
   canAfford(cost) {
     // TODO chceck if you can actually afford cost.
     return true;

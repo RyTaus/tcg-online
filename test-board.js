@@ -33,9 +33,9 @@ const effect2 = {
   }
 }
 
-const r = new Requirement(['deck'], ['blue'], ['soul', 'effect-soul']);
+const r = new Requirement(['manazone'], ['blue', 'red'], ['soul', 'effect-soul']);
 
-const EFFECT = new AddTo('activate', r, 'hand');
+const EFFECT = new AddTo('activate', { blue: 1 }, r, 'field');
 
 let d = new Soul('blue2', { 'blue': 1}, ELEMENT.blue, 1, 1, EFFECT);
 console.log(EFFECT);

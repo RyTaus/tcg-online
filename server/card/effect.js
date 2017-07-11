@@ -10,15 +10,16 @@
 */
 
 class Effect {
-  constructor(type, trigger) {
+  constructor(type, trigger, cost) {
     this.type = type;
     this.trigger = trigger;
+    this.cost = cost;
   }
 }
 
 class AddTo extends Effect {
-  constructor(trigger, filters, destination, amount = 1) {
-    super('AddTo', trigger);
+  constructor(trigger, cost, filters, destination, amount = 1) {
+    super('AddTo', trigger, cost);
     this.choose = true;
     this.data = {
       destination,
@@ -34,7 +35,7 @@ class AddTo extends Effect {
       cards.push(player.dataToCard(cd));
     });
     cards.forEach((card) => {
-      player.moveCardTo(card, this.data.destination);
+      board.moveCardTo(card, this.data.destination, playerIndex);
     });
   }
 }

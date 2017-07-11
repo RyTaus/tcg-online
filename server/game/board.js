@@ -21,6 +21,7 @@ class Board {
     this.turn = (this.turn + 1) % 2;
     this.phase = new Phase();
     this.canExpunge = true;
+    this.players[this.turn].pool = Object.assign({}, this.pool);
     // TODO reset mana and phase
   }
 
@@ -35,10 +36,12 @@ class Board {
   }
 
   summon(thing, player) {
+    player.payCost(thing.cost);
     thing.activate(this, player);
   }
 
   activate(card, data, playerIndex) {
+    this.players[playerIndex].payCost(card.effect.cost)
     card.effect.activate(data, this, playerIndex);
   }
 
@@ -68,6 +71,18 @@ class Board {
   attack(attacker, attackerPlayer, target, targetPlayer) {
     targetPlayer.life -= attacker.attack - target.defense;
     targetPlayer.moveCardTo(target, 'afterworld');
+  }
+
+  moveCardTo(card, destination, playerIndex) {
+    if (destination === 'manazone') {
+      this.pool[card.element] += 1;
+      this.players[0].pool[card.element] += 1;
+      this.players[1].pool[card.element] += 1;
+      this.manafiedCards.push(card);
+    } else if (card.location === 'manazone') {
+      this.pool[card.element] -= 1;
+    }
+    this.players[playerIndex].moveCardTo(card, destination);
   }
 
   setUp() {
