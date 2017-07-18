@@ -37,10 +37,11 @@ const askForResponse = (action) => {
 };
 
 board.setUp();
-console.log(board.pool);
 
 
 const clientPlayerIndex = socket => clients.indexOf(socket);
+const actionStack = [];
+
 
 io.on('connection', (socket) => {
 
@@ -50,10 +51,7 @@ io.on('connection', (socket) => {
   const playerIndex = clientPlayerIndex(socket);
   const otherPlayerIndex = (playerIndex + 1) % 2;
 
-  const Action = require('./action.js')(playerIndex, update, askForResponse);
-
-  const actionStack = [];
-
+  const Action = require('./action.js')(playerIndex, update, askForResponse, actionStack);
 
   const playerIdFromCard = (card) => {
     let id = +card.duel_id.charAt(0);
@@ -67,8 +65,18 @@ io.on('connection', (socket) => {
   };
 
   const dataToCard = (data) => {
+    // console.log(data);
     return board.dataToCard(data, data.location, board.players[playerIdFromCard(data)]);
   };
+
+  const effectToAction = (card, data) => {
+    if (card.effect.type === 'draw') {
+      return new Action.Draw(card, data.amount);
+    } else if (card.effect.type === 'add-to') {
+      console.log(data);
+      return new Action.MoveCard(card, data, card.effect.data.destination);
+    }
+  }
   // socket.emit('initialize', board);
 
   socket.on('disconnect', () => {
@@ -82,8 +90,15 @@ io.on('connection', (socket) => {
   socket.on('respond', ({ action, response }) => {
     // TODO not assume reponse is activate effect? But maybe thats all it can be i think
     // TODO also maybe response contains the card along with additional choices??
-    const c = dataToCard(response);
-    board.activate(c, action, playerIndex);
+    console.log(response);
+    if (response === 'none') {
+
+    } else {
+      const c = dataToCard(response.card);
+      const a = effectToAction(c, response.data);
+      a.perform(board);
+    }
+    // board.activate(c, response.data, playerIndex);
   });
 
   socket.on('summon', (card) => {
@@ -93,10 +108,13 @@ io.on('connection', (socket) => {
   });
 
   socket.on('activate', ({ card, data }) => {
+    // TODO take an effect activation and break it into an action
     // Data is any additional info the effect needs to resolve, IE target
     const c = dataToCard(card);
-    board.activate(c, data, playerIndex);
-    update();
+    const a = effectToAction(card, data);
+    a.perform(board);
+    // board.activate(c, data, playerIndex);
+    // update();
   });
 
   socket.on('expunge', (card) => {

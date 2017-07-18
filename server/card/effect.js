@@ -20,7 +20,7 @@ class Effect {
 
 class AddTo extends Effect {
   constructor(trigger, cost, filters, destination, amount = 1) {
-    super('AddTo', trigger, cost);
+    super('add-to', trigger, cost);
     this.choose = true;
     this.data = {
       destination,

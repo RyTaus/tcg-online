@@ -2,6 +2,7 @@ const socket = io();
 
 let board = null;
 let id = 0;
+let waiting = false;
 
 let menu = null;
 
@@ -21,6 +22,7 @@ const gameBoard = {
   turn: null
 };
 
+// let displayCard = null;
 let life = null;
 let pool = null;
 let phase = null;
@@ -106,15 +108,30 @@ class Option {
   }
 }
 
+const setDisplayCard = (card) => {
+
+  let displayCard = game.add.sprite(game.width / 2, game.height / 2, card.name);
+  displayCard.scale.setTo(3, 3);
+  displayCard.anchor.setTo(0.5, 0.5);
+
+  displayCard.alpha = 0.8;
+
+  const destroyDisplay = () => {
+    displayCard.destroy(false);
+  };
+
+  setTimeout(destroyDisplay, 500);
+};
+
 const getActions = (card) => {
   let actions = [];
   switch (card.location) {
     case 'hand':
       if (canAfford(card.cost)) {
-        actions.push(new Option('summon', () => { message.playCard(card); }));
+        actions.push(new Option('summon', () => { setDisplayCard(card); message.playCard(card); }));
       }
       if (board.canExpunge) {
-        actions.push(new Option('expunge', () => { message.expunge(card); }));
+        actions.push(new Option('expunge', () => { setDisplayCard(card); message.expunge(card); }));
       }
       break;
 
@@ -133,7 +150,7 @@ const getActions = (card) => {
                 menu.kill();
                 // TODO the function should have some sort of counter containing amount chosen.
                 console.log(filter(board, id, card.effect.data.filters));
-                menu = new CardSelection(game, filter(board, id, card.effect.data.filters), (chosen) => { console.log(chosen); message.activate(card, [chosen]); });
+                menu = new CardSelection(game, filter(board, id, card.effect.data.filters), (chosen) => { console.log(chosen); setDisplayCard(card); message.activate(card, [chosen]); });
               }))
             } else {
               actions.push(new Option('activate', () => { message.activate(card); }));
@@ -157,10 +174,8 @@ const getActions = (card) => {
   return actions;
 };
 
-const drawCard = (x, y, card, group, onclick, flip = false) => {
-  const temp = new Card(game, card, x, y, onclick);
-  temp.scale.setTo(0.6, 0.6);
-  temp.anchor.setTo(0.5, 0.5);
+const drawCard = (x, y, card, group, owner, onclick, flip = false) => {
+  const temp = new Card(game, card, x, y, owner, onclick);
 
   if (flip) {
     temp.angle += 180;
@@ -187,7 +202,7 @@ const updateState = () => {
 
   gameBoard.you.hand.removeAll();
   board.players[id].hand.cards.forEach((card, i) => {
-    drawCard(200 + (200 * i), 1000, card, gameBoard.you.hand, () => {
+    drawCard(200 + (200 * i), 1000, card, gameBoard.you.hand, true, () => {
       console.log(card);
       if (menu) {
         menu.kill();
@@ -199,7 +214,7 @@ const updateState = () => {
 
   gameBoard.you.field.removeAll();
   board.players[id].field.cards.forEach((card, i) => {
-    drawCard(200 + (200 * i), 700, card, gameBoard.you.field, () => {
+    drawCard(200 + (200 * i), 700, card, gameBoard.you.field, true, () => {
       if (menu) {
         menu.kill();
       }
@@ -214,13 +229,13 @@ const updateOpponent = () => {
   gameBoard.them.hand.removeAll();
 
   board.players[(id + 1) % 2].hand.cards.forEach((card, i) => {
-    drawCard(200 + (200 * i), 100, { name: 'back' }, gameBoard.them.hand, () => { }, true);
+    drawCard(200 + (200 * i), 100, { name: 'back' }, gameBoard.them.hand, false, () => { }, true);
   });
 
 
   gameBoard.them.field.removeAll();
   board.players[(id + 1) % 2].field.cards.forEach((card, i) => {
-    drawCard(200 + (200 * i), 350, card, gameBoard.them.field, () => { }, true);
+    drawCard(200 + (200 * i), 350, card, gameBoard.them.field, false, () => { }, true);
   });
 };
 
@@ -243,7 +258,18 @@ socket.on('response-query', ({ action, callback }) => {
   if (possibleResponses.length > 0) {
     console.log('HERE I WOULD CHOOSE ACTION');
   }
-  let response = possibleResponses[0];
+  let card = possibleResponses[0];
   // TODO how to describe response
-  message.respond(action, response)
+  let data = {};
+  console.log(cardToVisual(card));
+  setDisplayCard(card);
+  cardToVisual(card).highlight();
+  // TODO might need to add some sort of state esp for the selection of what card to activate.
+
+  if (card) {
+    message.respond(action, { card, data });
+  } else {
+    message.respond(action, 'none');
+
+  }
 });

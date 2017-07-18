@@ -26,17 +26,17 @@ class CardSelection extends Phaser.Group {
     this.add(right);
     this.add(left);
 
-    this.update();
+    this.change();
   }
 
-  update() {
+  change() {
     // if (this.cards.length === 0) {
     //   this.kill();
     // }
     if (this.focus) {
       this.focus.destroy(true);
     }
-    this.focus = new Card(this.game_reference, this.cards[this.offset], 350, 350, () => {console.log('ok');});
+    this.focus = new Card(this.game_reference, this.cards[this.offset], 350, 350, false, () => {console.log('ok');});
     this.focus.scale.setTo(1, 1);
     this.focus.inputEnabled = true;
     this.focus.events.onInputDown.add(() => {console.log('ok')}, this);

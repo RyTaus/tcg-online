@@ -11,9 +11,10 @@
   perform: this function performs the action as well as asks for responses
 */
 
-const createActions = (playerId, upd, afr) => {
+const createActions = (playerId, upd, afr, as) => {
   const update = upd;
   const askForResponse = afr;
+  const actionStack = as
 
   class Action {
     constructor(action, card) {
@@ -40,6 +41,7 @@ const createActions = (playerId, upd, afr) => {
     }
 
     perform(board) {
+      actionStack.push(this);
       board.summon(this.card, board.players[this.playerId]);
       update();
       askForResponse(this);
@@ -48,8 +50,28 @@ const createActions = (playerId, upd, afr) => {
 
   class MoveCard extends Action {
     // data is from and to
-    constructor(card, from, to) {
-      super('move-card', card, { from, to });
+    constructor(card, cards, to, from) {
+      super('move-card', card);
+      this.data = {
+        from,
+        to,
+        cards
+      }
+    }
+
+    perform(board) {
+      actionStack.push(this);
+      const player = board.players[this.playerId];
+      const cards = [];
+      this.data.cards.forEach((cd) => {
+        cards.push(player.dataToCard(cd));
+      });
+      console.log('moveCard', this.cards);
+      cards.forEach((card) => {
+        board.moveCardTo(card, this.data.to, this.playerId);
+      });
+
+      update();
     }
   }
 
@@ -60,12 +82,20 @@ const createActions = (playerId, upd, afr) => {
         amount
       };
     }
+
+    perform(board) {
+      actionStack.push(this);
+      board.players[this.playerId].draw(this.data.amount);
+      update();
+      askForResponse(this);
+    }
   }
 
 
   return {
     Summon,
-    MoveCard
+    MoveCard,
+    Draw
   };
 };
 

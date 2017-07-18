@@ -6,7 +6,7 @@ const filter = (board, id, requirement) => {
   const map = {
     me: id,
     them: (id + 1) % 2
-  }
+  };
   const result = [];
   const player = board.players[id];
   // might do for each requirement
@@ -22,6 +22,9 @@ const filter = (board, id, requirement) => {
 
 const getResponses = (board, id, action) => {
   const canRespond = (card) => {
+    if (card.type === 'soul') {
+      return false;
+    }
     if (action.action === 'summon') {
       if (card.effect.trigger.type === 'on-other-summon') {
         return true;
@@ -40,3 +43,15 @@ const getResponses = (board, id, action) => {
 
   return responses;
 };
+
+const cardToVisual = (card) => {
+  let result;
+  gameBoard.you[card.location].children.some((c) => {
+    if (c.card.duel_id === card.duel_id) {
+      result = c;
+      return true;
+    }
+    return false;
+  });
+  return result;
+}

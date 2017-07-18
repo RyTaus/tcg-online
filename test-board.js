@@ -21,7 +21,6 @@ const EFFECT2 = new Effect.Draw(new Trigger.OnOtherSummon('hand'), {}, 1);
 let a = new Soul('red2', {'red': 1}, ELEMENT.red, 4, 2, EFFECT2);
 
 let d = new Soul('blue2', { 'blue': 1}, ELEMENT.blue, 1, 1, EFFECT);
-console.log(EFFECT);
 // console.log(Soul);
 
 let deck = new CardCollection([d.copy(), a.copy(), b.copy(), c.copy(), a.copy(), d.copy(), b.copy(), c.copy(), a.copy(), b.copy(), c.copy()]);
