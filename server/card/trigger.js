@@ -18,7 +18,7 @@ class OnSummon extends Trigger {
 
 class OnOtherSummon extends Trigger {
   constructor(location) {
-    super('on-other-summon', location)
+    super('on-other-summon', location);
   }
 }
 

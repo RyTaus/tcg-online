@@ -3,6 +3,6 @@ const ELEMENT = {
   blue: 'blue',
   green: 'green',
   nuetral: 'nuetral'
-}
+};
 
 module.exports = ELEMENT;

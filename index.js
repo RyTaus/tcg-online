@@ -22,7 +22,7 @@ http.listen(portNumber, () => {
 
 const clients = [];
 
-const update = () => {
+const update = (action) => {
   io.sockets.emit('update', board);
 };
 
@@ -119,9 +119,11 @@ io.on('connection', (socket) => {
 
   socket.on('expunge', (card) => {
     const c = dataToCard(card);
-    board.expunge(c, board.players[playerIndex]);
+    // board.expunge(c, board.players[playerIndex]);
     // board.players[playerIndex].grabCard(c, c.location);
-    update();
+    const a = new Action.Expunge(card);
+    a.perform(board);
+    // update();
   });
 
   socket.on('standby', () => {

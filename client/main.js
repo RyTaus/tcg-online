@@ -258,6 +258,7 @@ socket.on('response-query', ({ action, callback }) => {
   if (possibleResponses.length > 0) {
     console.log('HERE I WOULD CHOOSE ACTION');
   }
+  console.log();
   let card = possibleResponses[0];
   // TODO how to describe response
   let data = {};

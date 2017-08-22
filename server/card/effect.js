@@ -1,13 +1,4 @@
-/*
-  Effect {
-    Cost
-    Archtype {
-      Requirement
-      ...
-    }
-  }
 
-*/
 const Trigger = require('./trigger.js');
 
 class Effect {
@@ -67,7 +58,6 @@ class Draw extends Effect {
     player.draw(this.data.amount);
   }
 }
-let test = new AddTo(new Trigger.Activate('field'), { location: ['deck'], element: ['red'] }, 'hand');
 
 
 module.exports = {

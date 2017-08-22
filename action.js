@@ -25,6 +25,17 @@ const createActions = (playerId, upd, afr, as) => {
     }
   }
 
+  class Expunge extends Action {
+    constructor(card) {
+      super('expunge', card);
+    }
+
+    perform(board) {
+      board.expunge(this.card, board.players[this.playerId]);
+      update();
+    }
+  }
+
   class Debug extends Action {
     constructor(card) {
       super('debug', card);
@@ -95,7 +106,8 @@ const createActions = (playerId, upd, afr, as) => {
   return {
     Summon,
     MoveCard,
-    Draw
+    Draw,
+    Expunge
   };
 };
 
