@@ -1,3 +1,23 @@
+const canAfford = (cost) => {
+  let can = true;
+  let sumCard = 0;
+  let sumBoard = 0;
+  Object.keys(board.pool).forEach((c) => {
+    if (c !== 'Nuetral') {
+      const costOfElem = cost[c] || 0;
+      // console.log(`${c}: ${costOfElem}  ${board.pool[c]}`);
+      // TODO should use player's pool
+      if (costOfElem > board.players[id].pool[c]) {
+        can = false;
+      }
+      sumCard += costOfElem;
+      sumBoard += board.players[id].pool[c];
+    }
+  });
+  // console.log(sumCard, '  ', sumBoard);
+  return can && sumCard <= sumBoard;
+};
+
 const filter = (board, id, requirement) => {
   /* takes in a requirements object and returns a list of cards that satisfy
      the requirements.
@@ -35,6 +55,7 @@ const getResponses = (board, id, action) => {
 
   const responses = [];
 
+  //TODO loop through more than just hand
   board.players[id].hand.cards.forEach((card) => {
     if (canRespond(card)) {
       responses.push(card);

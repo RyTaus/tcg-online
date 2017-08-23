@@ -81,26 +81,6 @@ function update() {
 
 }
 
-const canAfford = (cost) => {
-  let can = true;
-  let sumCard = 0;
-  let sumBoard = 0;
-  Object.keys(board.pool).forEach((c) => {
-    if (c !== 'Nuetral') {
-      const costOfElem = cost[c] || 0;
-      // console.log(`${c}: ${costOfElem}  ${board.pool[c]}`);
-      // TODO should use player's pool
-      if (costOfElem > board.players[id].pool[c]) {
-        can = false;
-      }
-      sumCard += costOfElem;
-      sumBoard += board.players[id].pool[c];
-    }
-  });
-  // console.log(sumCard, '  ', sumBoard);
-  return can && sumCard <= sumBoard;
-};
-
 class Option {
   constructor(text, action) {
     this.text = text;
@@ -109,8 +89,7 @@ class Option {
 }
 
 const setDisplayCard = (card) => {
-
-  let displayCard = game.add.sprite(game.width / 2, game.height / 2, card.name);
+  const displayCard = game.add.sprite(game.width / 2, game.height / 2, card.name);
   displayCard.scale.setTo(3, 3);
   displayCard.anchor.setTo(0.5, 0.5);
 
@@ -149,9 +128,16 @@ const getActions = (card) => {
               actions.push(new Option('activate', () => {
                 menu.kill();
                 // TODO the function should have some sort of counter containing amount chosen.
-                console.log(filter(board, id, card.effect.data.filters));
-                menu = new CardSelection(game, filter(board, id, card.effect.data.filters), (chosen) => { console.log(chosen); setDisplayCard(card); message.activate(card, [chosen]); });
-              }))
+                // console.log(filter(board, id, card.effect.data.filters));
+                menu = new CardSelection(
+                  game,
+                  filter(board, id, card.effect.data.filters),
+                  (chosen) => {
+                    console.log(chosen); setDisplayCard(card); message.activate(card, [chosen]);
+                  }
+                );
+
+              }));
             } else {
               actions.push(new Option('activate', () => { message.activate(card); }));
             }
@@ -163,7 +149,7 @@ const getActions = (card) => {
     default:
       break;
   }
-  if (board.turn != id) {
+  if (board.turn !== id) {
     actions = [];
     console.log('not your turn biaaaaatch');
   }
