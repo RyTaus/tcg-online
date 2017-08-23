@@ -8,10 +8,10 @@ class Card extends Phaser.Sprite {
     this.anchor.setTo(0.5, 0.5);
 
     this.inputEnabled = true;
-    this.events.onInputDown.add(() => {console.log('click');}, this);
-    console.log(onclick);
-    console.log(owner);
+    this.events.onInputDown.add(() => { console.log('click'); }, this);
     this.events.onInputDown.add(onclick, this);
+    this.events.onInputOver.add(this.setSideBar, this);
+
 
     if (owner) {
       this.events.onInputOver.add(() => { this.scale.setTo(0.7, 0.7); });
@@ -21,5 +21,9 @@ class Card extends Phaser.Sprite {
 
   highlight() {
     this.tint = 0x888888;
+  }
+
+  setSideBar() {
+    setSideBar(this);
   }
 }

@@ -13,7 +13,8 @@ let c = new Soul({
   cost: { red: 4 },
   element: ELEMENT.red,
   atk: 4,
-  def: 2
+  def: 2,
+  description: 'a card that is suprisingly red'
 });
 let b = new Soul({
   name: 'blue1',
@@ -37,7 +38,8 @@ let a = new Soul({
   element: ELEMENT.red,
   atk: 4,
   def: 1,
-  effect: EFFECT2
+  effect: EFFECT2,
+  description: 'If this card is in your hand and a card is summoned draw a card.'
 });
 
 let d = new Soul({
@@ -46,7 +48,8 @@ let d = new Soul({
   element: ELEMENT.blue,
   atk: 1,
   def: 1,
-  effect: EFFECT
+  effect: EFFECT,
+  description: 'Activate this card to summon a blue or red card from your mana zone. Cost: 1 blue'
 });
 // console.log(Soul);
 

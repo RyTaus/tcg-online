@@ -4,7 +4,8 @@
 */
 
 class Card {
-  constructor(name, cost, element, description = '') {
+  constructor(name, cost, element, description) {
+    // console.log(description);
     this.name = name;
     this.cost = cost;
     this.element = element;

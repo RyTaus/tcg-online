@@ -27,6 +27,10 @@ let life = null;
 let pool = null;
 let phase = null;
 let turn = null;
+let sidebar = {
+  card: null,
+  text: null
+};
 
 const game = new Phaser.Game(1600, 1200, Phaser.CANVAS, '', {preload, create, update});
 
@@ -73,6 +77,7 @@ function create() {
   life = game.add.text(800, 50, 'you:  || them:  ');
   phase = game.add.text(800, 100, 'Phase: ');
   turn = game.add.text(800, 150, 'Turn: ');
+  sidebar.text = game.add.text(10, 350, '', { wordWrap: true, wordWrapWidth: 250 });
 
   updateState();
 }
@@ -80,6 +85,13 @@ function create() {
 function update() {
 
 }
+
+const setSideBar = (card) => {
+  sidebar.card = game.add.sprite(10, 10, card.card.name);
+  sidebar.text.setText(card.card.description);
+
+  console.log(card.card);
+};
 
 class Option {
   constructor(text, action) {
@@ -188,7 +200,7 @@ const updateState = () => {
 
   gameBoard.you.hand.removeAll();
   board.players[id].hand.cards.forEach((card, i) => {
-    drawCard(200 + (200 * i), 1000, card, gameBoard.you.hand, true, () => {
+    drawCard(400 + (200 * i), 1000, card, gameBoard.you.hand, true, () => {
       console.log(card);
       if (menu) {
         menu.kill();
@@ -200,7 +212,7 @@ const updateState = () => {
 
   gameBoard.you.field.removeAll();
   board.players[id].field.cards.forEach((card, i) => {
-    drawCard(200 + (200 * i), 700, card, gameBoard.you.field, true, () => {
+    drawCard(400 + (200 * i), 700, card, gameBoard.you.field, true, () => {
       if (menu) {
         menu.kill();
       }
@@ -215,13 +227,13 @@ const updateOpponent = () => {
   gameBoard.them.hand.removeAll();
 
   board.players[(id + 1) % 2].hand.cards.forEach((card, i) => {
-    drawCard(200 + (200 * i), 100, { name: 'back' }, gameBoard.them.hand, false, () => { }, true);
+    drawCard(400 + (200 * i), 100, { name: 'back' }, gameBoard.them.hand, false, () => { }, true);
   });
 
 
   gameBoard.them.field.removeAll();
   board.players[(id + 1) % 2].field.cards.forEach((card, i) => {
-    drawCard(200 + (200 * i), 350, card, gameBoard.them.field, false, () => { }, true);
+    drawCard(400 + (200 * i), 350, card, gameBoard.them.field, false, () => { }, true);
   });
 };
 

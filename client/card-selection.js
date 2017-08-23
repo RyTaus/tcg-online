@@ -1,5 +1,5 @@
 class CardSelection extends Phaser.Group {
-  constructor(game, cards = [], onselection = () => {console.log('selected');}) {
+  constructor(game, cards = [], onselection = () => { console.log('selected'); }) {
     super(game);
     this.game_reference = game;
     this.cards = cards;
@@ -30,9 +30,6 @@ class CardSelection extends Phaser.Group {
   }
 
   change() {
-    // if (this.cards.length === 0) {
-    //   this.kill();
-    // }
     if (this.focus) {
       this.focus.destroy(true);
     }
@@ -45,8 +42,9 @@ class CardSelection extends Phaser.Group {
 
   move(cs, amount) {
     return () => {
+      console.log('move to: ' + amount);
       cs.offset = (((cs.offset + amount) % cs.cards.length) + cs.cards.length) % cs.cards.length;
-      cs.update();
+      cs.change();
     }
   }
 

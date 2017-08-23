@@ -3,6 +3,7 @@ const Card = require('./card.js')
 class Soul extends Card {
   constructor({ name, cost, element, description, atk, def, effect }) {
     super(name, cost, element, description);
+    // console.log(description);
     this.attack = atk;
     this.defense = def;
     this.effect = effect;
