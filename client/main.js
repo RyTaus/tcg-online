@@ -27,7 +27,7 @@ let life = null;
 let pool = null;
 let phase = null;
 let turn = null;
-let sidebar = {
+const sidebar = {
   card: null,
   text: null
 };
@@ -74,9 +74,9 @@ function create() {
   gameBoard.them.field = game.add.group();
 
   pool = game.add.group();
-  life = game.add.text(800, 50, 'you:  || them:  ');
-  phase = game.add.text(800, 100, 'Phase: ');
-  turn = game.add.text(800, 150, 'Turn: ');
+  life = game.add.text(1000, 50, 'you:  || them:  ');
+  phase = game.add.text(1000, 100, 'Phase: ');
+  turn = game.add.text(1000, 150, 'Turn: ');
   sidebar.text = game.add.text(10, 350, '', { wordWrap: true, wordWrapWidth: 250 });
 
   updateState();
@@ -88,9 +88,7 @@ function update() {
 
 const setSideBar = (card) => {
   sidebar.card = game.add.sprite(10, 10, card.card.name);
-  sidebar.text.setText(card.card.description);
-
-  console.log(card.card);
+  sidebar.text.setText(card.card.description || '');
 };
 
 class Option {
@@ -130,7 +128,8 @@ const getActions = (card) => {
       if (!card.hasAttacked) {
         actions.push(new Option('attack', () => {
           menu.kill();
-          menu = new CardSelection(game, board.players[(id + 1) % 2].field.cards, (target) => { message.attack(card, target); });
+          menu = new CardSelection(game, board.players[(id + 1) % 2].field.cards,
+           (target) => { message.attack(card, target); });
         }));
       }
       if (card.type === 'effect-soul') {
@@ -189,19 +188,18 @@ const updateState = () => {
 
   life.setText(`you: ${board.players[id].life} || them: ${board.players[(id + 1) % 2].life}`);
   phase.setText(`Phase: ${board.phase.state}`);
-  turn.setText(`Trun: ${board.turn === id ? 'yours' : 'theirs'}`);
+  turn.setText(`Turn: ${board.turn === id ? 'yours' : 'theirs'}`);
 
 
   pool.removeAll();
 
   Object.keys(board.players[id].pool).forEach((elem, i) => {
-    pool.add(game.add.text(900, 200 + (50 * i), `${elem}: ${board.players[id].pool[elem]} / ${board.pool[elem]}`));
+    pool.add(game.add.text(1000, 200 + (50 * i), `${elem}: ${board.players[id].pool[elem]} / ${board.pool[elem]}`));
   });
 
   gameBoard.you.hand.removeAll();
   board.players[id].hand.cards.forEach((card, i) => {
     drawCard(400 + (200 * i), 1000, card, gameBoard.you.hand, true, () => {
-      console.log(card);
       if (menu) {
         menu.kill();
       }

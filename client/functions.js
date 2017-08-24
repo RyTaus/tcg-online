@@ -5,8 +5,6 @@ const canAfford = (cost) => {
   Object.keys(board.pool).forEach((c) => {
     if (c !== 'Nuetral') {
       const costOfElem = cost[c] || 0;
-      // console.log(`${c}: ${costOfElem}  ${board.pool[c]}`);
-      // TODO should use player's pool
       if (costOfElem > board.players[id].pool[c]) {
         can = false;
       }
@@ -14,7 +12,6 @@ const canAfford = (cost) => {
       sumBoard += board.players[id].pool[c];
     }
   });
-  // console.log(sumCard, '  ', sumBoard);
   return can && sumCard <= sumBoard;
 };
 
@@ -22,7 +19,6 @@ const filter = (board, id, requirement) => {
   /* takes in a requirements object and returns a list of cards that satisfy
      the requirements.
   */
-  // TODO Use Map To Get Correct Player
   const map = {
     me: id,
     them: (id + 1) % 2

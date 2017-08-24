@@ -1,5 +1,5 @@
 class Card extends Phaser.Sprite {
-  constructor(game, card, x, y, owner, onclick) {
+  constructor(game, card, x, y, owner, onclick = () => {}) {
     super(game, x, y, card ? card.name : 'bg');
     this.card = card;
     this.onclick = onclick;
@@ -8,7 +8,6 @@ class Card extends Phaser.Sprite {
     this.anchor.setTo(0.5, 0.5);
 
     this.inputEnabled = true;
-    this.events.onInputDown.add(() => { console.log('click'); }, this);
     this.events.onInputDown.add(onclick, this);
     this.events.onInputOver.add(this.setSideBar, this);
 

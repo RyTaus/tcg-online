@@ -77,7 +77,6 @@ const createActions = (playerId, upd, afr, as) => {
       this.data.cards.forEach((cd) => {
         cards.push(player.dataToCard(cd));
       });
-      console.log('moveCard', this.cards);
       cards.forEach((card) => {
         board.moveCardTo(card, this.data.to, this.playerId);
       });

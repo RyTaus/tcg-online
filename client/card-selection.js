@@ -1,9 +1,8 @@
 class CardSelection extends Phaser.Group {
-  constructor(game, cards = [], onselection = () => { console.log('selected'); }) {
+  constructor(game, cards = [], onselection = () => { }) {
     super(game);
     this.game_reference = game;
     this.cards = cards;
-    console.log(this.cards);
 
     this.offset = 0;
     this.onselection = onselection;
@@ -12,7 +11,6 @@ class CardSelection extends Phaser.Group {
     backdrop.scale.setTo(14, 10);
     backdrop.tint = 0x882288;
     backdrop.alpha = 0.6;
-    // backdrop.inputEnabled = true;
     const m = this;
     const accept = new Button(game, 800, 900, 1, 0.5, new Phaser.Text(game, 0, 0, 'accept'), () => {onselection(this.cards[this.offset])}, () => {m.kill()});
 
@@ -20,8 +18,8 @@ class CardSelection extends Phaser.Group {
     this.add(accept);
 
 
-    const right = new Button(game, 1400, 100, 0.5, 1, new Phaser.Text(game, 0, 0, '>'), this.move(this, 1), () => {});
-    const left = new Button(game, 200, 100, 0.5, 1, new Phaser.Text(game, 0, 0, '<'), this.move(this, -1), () => {});
+    const right = new Button(game, 1400, 100, 0.5, 1, new Phaser.Text(game, 0, 0, '>'), this.move(1), () => {});
+    const left = new Button(game, 200, 100, 0.5, 1, new Phaser.Text(game, 0, 0, '<'), this.move(-1), () => {});
 
     this.add(right);
     this.add(left);
@@ -33,18 +31,17 @@ class CardSelection extends Phaser.Group {
     if (this.focus) {
       this.focus.destroy(true);
     }
-    this.focus = new Card(this.game_reference, this.cards[this.offset], 350, 350, false, () => {console.log('ok');});
+    this.focus = new Card(this.game_reference, this.cards[this.offset], 350, 350, false);
     this.focus.scale.setTo(1, 1);
     this.focus.inputEnabled = true;
-    this.focus.events.onInputDown.add(() => {console.log('ok')}, this);
     this.add(this.focus);
   }
 
-  move(cs, amount) {
+  move(amount) {
     return () => {
-      console.log('move to: ' + amount);
-      cs.offset = (((cs.offset + amount) % cs.cards.length) + cs.cards.length) % cs.cards.length;
-      cs.change();
+      this.offset =
+          (((this.offset + amount) % this.cards.length) + this.cards.length) % this.cards.length;
+      this.change();
     }
   }
 
